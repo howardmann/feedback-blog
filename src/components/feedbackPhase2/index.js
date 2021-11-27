@@ -1,5 +1,5 @@
 import React from 'react'
-import feedbackMachine from '../../stateMachines/feedbackPhase1'
+import feedbackMachine from '../../stateMachines/feedbackPhase2'
 import {useMachine} from '@xstate/react'
 
 const Feedback = () => {
@@ -8,7 +8,7 @@ const Feedback = () => {
   return (
     <div style={{width: '100%'}}>
     <div style={{border: '3px solid rebeccapurple', textAlign: 'center', height: '350px', width: '100%'}}>
-      <h1>Phase 1 - Feedback Widget</h1>
+      <h1>Phase 2 - Feedback Widget</h1>
 
       <h2>{current.context.message}</h2>
 
@@ -17,7 +17,7 @@ const Feedback = () => {
         <button onClick={() => send('CLICK')}>Feedback Click</button>
       }
 
-      {/* START */}
+      {/* RESPONSE */}
       {current.matches('feedback.response') && 
       <>
         <p>
@@ -29,6 +29,22 @@ const Feedback = () => {
         <button onClick={() => send('CANCEL')}>CANCEL</button>
       </>
       }
+
+      {/* NEGATIVE FEEDBACK */}
+      {current.matches('feedback.negativeFeedback') && 
+      
+      <>
+        <p>Main reason for your negative experience?</p>
+        <p>
+          <button onClick={() => send('SERVICE')}>SERVICE</button>
+          <button onClick={() => send('PRODUCT')}>PRODUCT</button>
+          <button onClick={() => send('PRICE')}>PRICING</button>
+          <br/><br/>
+          <button onClick={() => send('POSITIVE')}>Whoops, I meant POSITIVE 👍</button>
+        </p>
+      </>
+      }
+
       
       {/* RESTART */}
       {(current.matches('feedback.positiveConfirm') || current.matches('feedback.negativeConfirm')) && 

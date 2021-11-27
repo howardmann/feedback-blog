@@ -53,7 +53,7 @@ const Feedback = () => {
       {current.matches('feedback.positiveConfirm') && 
       <div>
         <h1>😍</h1>
-        <button onClick={() => send('RESTART')}>Restart</button>
+        <button onClick={() => send('RESTART')}>RESTART</button>
       </div>
       }
 
@@ -61,7 +61,7 @@ const Feedback = () => {
       {current.matches('feedback.negativeConfirm') && 
       <div>
         <h1>😔</h1>
-        <button onClick={() => send('RESTART')}>Restart</button>
+        <button onClick={() => send('RESTART')}>RESTART</button>
       </div>
       }
 

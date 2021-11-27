@@ -7,8 +7,6 @@ function App() {
   return (
     <div className="App" style={{height: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
       <Feedback1/>
-      <Feedback2/>
-      <Feedback3/>
     </div>
   );
 }

@@ -14,26 +14,38 @@ const Feedback = () => {
 
       {/* START */}
       {current.matches('start') && 
-        <button onClick={() => send('CLICK')}>Feedback Click</button>
+        <button onClick={() => send('CLICK')}>GIVE FEEDBACK</button>
       }
 
       {/* START */}
       {current.matches('feedback.response') && 
       <>
         <p>
-          <button onClick={() => send('POSITIVE')}>POSITIVE 👍</button>
+          <button style={{backgroundColor: 'seagreen', color: 'white'}} onClick={() => send('POSITIVE')}>POSITIVE 👍</button>
           <pre>or</pre>
-          <button onClick={() => send('NEGATIVE')}>NEGATIVE 👎</button>
+          <button style={{backgroundColor: 'indianred'}} onClick={() => send('NEGATIVE')}>NEGATIVE 👎</button>
         </p>
         <br/>
         <button onClick={() => send('CANCEL')}>CANCEL</button>
       </>
       }
       
-      {/* RESTART */}
-      {(current.matches('feedback.positiveConfirm') || current.matches('feedback.negativeConfirm')) && 
-      <button onClick={() => send('RESTART')}>Restart</button>
+      {/* POSITIVE CONFIRM */}
+      {current.matches('feedback.positiveConfirm') && 
+      <div>
+        <h1>😍</h1>
+        <button onClick={() => send('RESTART')}>Restart</button>
+      </div>
       }
+
+      {/* NEGATIVE CONFIRM */}
+      {current.matches('feedback.negativeConfirm') && 
+      <div>
+        <h1>😔</h1>
+        <button onClick={() => send('RESTART')}>Restart</button>
+      </div>
+      }
+
 
 
     </div>

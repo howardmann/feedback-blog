@@ -14,16 +14,16 @@ const Feedback = () => {
 
       {/* START */}
       {current.matches('start') && 
-        <button onClick={() => send('CLICK')}>Feedback Click</button>
+        <button onClick={() => send('CLICK')}>GIVE FEEDBACK</button>
       }
 
       {/* RESPONSE */}
       {current.matches('feedback.response') && 
       <>
         <p>
-          <button onClick={() => send('POSITIVE')}>POSITIVE 👍</button>
+          <button style={{backgroundColor: 'seagreen', color: 'white'}} onClick={() => send('POSITIVE')}>POSITIVE 👍</button>
           <pre>or</pre>
-          <button onClick={() => send('NEGATIVE')}>NEGATIVE 👎</button>
+          <button style={{backgroundColor: 'indianred'}} onClick={() => send('NEGATIVE')}>NEGATIVE 👎</button>
         </p>
         <br/>
         <button onClick={() => send('CANCEL')}>CANCEL</button>
@@ -37,19 +37,34 @@ const Feedback = () => {
         <p>Main reason for your negative experience?</p>
         <p>
           <button onClick={() => send('SERVICE')}>SERVICE</button>
+           | 
           <button onClick={() => send('PRODUCT')}>PRODUCT</button>
+           | 
           <button onClick={() => send('PRICE')}>PRICING</button>
+          
           <br/><br/>
-          <button onClick={() => send('POSITIVE')}>Whoops, I meant POSITIVE 👍</button>
+          <button style={{backgroundColor: 'seagreen', color: 'white'}} onClick={() => send('POSITIVE')}>Whoops, I meant POSITIVE 👍</button>
         </p>
       </>
       }
 
       
-      {/* RESTART */}
-      {(current.matches('feedback.positiveConfirm') || current.matches('feedback.negativeConfirm')) && 
-      <button onClick={() => send('RESTART')}>Restart</button>
+      {/* POSITIVE CONFIRM */}
+      {current.matches('feedback.positiveConfirm') && 
+      <div>
+        <h1>😍</h1>
+        <button onClick={() => send('RESTART')}>Restart</button>
+      </div>
       }
+
+      {/* NEGATIVE CONFIRM */}
+      {current.matches('feedback.negativeConfirm') && 
+      <div>
+        <h1>😔</h1>
+        <button onClick={() => send('RESTART')}>Restart</button>
+      </div>
+      }
+
 
 
     </div>

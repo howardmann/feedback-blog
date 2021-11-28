@@ -135,3 +135,10 @@ Examples may include:
 - etc.
 
 With Finite State Machines we can confidently continue modelling this advanced complexity into our design and visually see how it interacts with previous functionality.
+
+See below for the final State Chart in XState visualised using [stately.ai](https://stately.ai/)
+
+<iframe src="https://stately.ai/viz/embed/f0d95293-ec80-419e-9a3b-94204d441c7d?mode=viz&panel=code&readOnly=1&showOriginalLink=1&controls=0&pan=0&zoom=0"
+allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
+sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
+></iframe>

@@ -1,70 +1,137 @@
-# Getting Started with Create React App
+# Finite State Machines - A Common Tool for Product Owners, Designers & Developers
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+[See full blog post on mannhowie.com](https://mannhowie.com/finite-state-machines)
 
-## Available Scripts
+![fininte state machine](https://images.ctfassets.net/vwq10xzbe6iz/6JNh1Rpi6a1VUnTux03TzW/c69b8b54a1be48ec820cec8e721163af/fininte_state_machine.png)
 
-In the project directory, you can run:
+Finite State Machines allow cross-functional teams to visually design complex logic before committing expensive resources to design and code implementation.
 
-### `yarn start`
+It is a powerful tool for product teams and business owners to communicate on customer requirements in order to identify rabbit holes and poor UX early in the process.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+They have been widely used in electrical engineering and in the logic design of electronic devices for decades. 
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+To illustrate the power of Finite State Machines, imagine we have been briefed by the business to build a customer feedback form widget.
 
-### `yarn test`
+## Phase 1 - Simple Feedback Widget
+The first phase of our brief is for a simple feedback widget that will do the following:
+- Ask for positive or negative feedback
+- If positive display a happy success message
+- If negative display an apology
+- Allow user to cancel the feedback form
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+We can visualise this simple application using Finite State Machines below:
+![phase1](https://images.ctfassets.net/vwq10xzbe6iz/3aRVidpZK6c6qevtvEWLfB/9a09666917aeeddc3170c9a4ef80cfcf/phase1.png)
 
-### `yarn build`
+Our application has 4 states:
+1. __START__ - our initial state where a user can click to begin the survey
+2. __RESPONSE__ - where a user is asked for a positive or negative response and where they can cancel to go back to START
+3. __POSITIVE CONFIRM__: an end state upon a user clicking POSITIVE
+4. __NEGATIVE CONFIRM__: an end state upon a user clicking NEGATIVE
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+Our 4 states are also characterised by 4 events and transitions which are conditional upon the current state the application is in.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+Our application also triggers actions such as saving the rating and updating the message upon certain events and entering different states.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+Once the logic and user flow has been agreed we can easily convert this to design and code stage. In the examples below we use the open source library [XState](https://xstate.js.org/docs/) by [David Khourshid](https://github.com/davidkpiano) to codify our Finite State Machine and use ReactJS to render our UI.
 
-### `yarn eject`
+```js
+import { createMachine, assign } from 'xstate';
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+const feedbackMachine = createMachine({
+  id: 'machine',
+  initial: 'start',
+  context: {
+    message: "",
+    rating: ""
+  },
+  states: {
+    start: {
+      on: { CLICK: 'feedback' },
+      entry: assign({
+        message: "Rate your experience",
+        rating: ""
+      })
+    },
+    feedback: {
+      initial: 'response',
+      states: {
+        response: {
+          on: {
+            POSITIVE: {
+              target: 'positiveConfirm',
+              actions: assign({ rating: 'positive' })
+            },
+            NEGATIVE: {
+              target: 'negativeConfirm',
+              actions: assign({ rating: 'negative' })
+            },
+            CANCEL: '#machine.start'
+          }
+        },
+        positiveConfirm: {
+          type: 'final',
+          entry: assign({ message: "Hooray. Thank you for your feedback." }),
+          on: { RESTART: '#machine.start' }
+        },
+        negativeConfirm: {
+          type: 'final',
+          entry: assign({ message: "We are sorry to hear." }),
+          on: { RESTART: '#machine.start' }
+        }
+      }
+    }
+  }
+});
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+export default feedbackMachine
+```
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+[View demo](https://stkhm.csb.app/)
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+## Phase 2 - Negative Feedback Reason
+The business has now come back asking for us to capture the main reasons for negative feedback.
 
-## Learn More
+Our application now must:
+- Ask the user to select the main reason for negative feedback (Service, Product, Price)
+- Also allow a user to select POSITIVE again if they accidentally selected NEGATIVE
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+With Finite State Machines we can easily modify and expand our logic without breaking any previous logic:
+![phase2](https://images.ctfassets.net/vwq10xzbe6iz/38VI5AsXioynO833DlaAzM/9f8c7edb547374d6044b6bff26400c85/phase2.png)
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+Our application has a new __NEGATIVE FEEDBACK__ state which allows a user to select from three of the main reasons for the negative response (SERVICE, PRODUCT or PRICE). Upon selecting an event the reason is captured and the state transitions to the NEGATIVE CONFIRM end state and displays an apology message.
 
-### Code Splitting
+We have now also added a new POSITIVE event which a user can click on to transition directly to the POSITIVE CONFIRM end state.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+Our team can now confidently update our application with the new business logic:
 
-### Analyzing the Bundle Size
+[View demo](https://lg6sy.csb.app/)
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+## Phase 3 - Advanced Feedback
+The business comes back wanting to direct users to contact sales for pricing discussions if they select PRICE as a negative response. In addition they want to capture any other reasons for negative feedback.
 
-### Making a Progressive Web App
+Our application must now grow in complexity to handle the following:
+- If user selects PRICE as a negative response, send to different end state with pricing discussion CTA
+- New OTHER option for a user to select with ability to leave comment
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+Once again we modify our Finite State Machines to expand our logic
+![phase3](https://images.ctfassets.net/vwq10xzbe6iz/6wb9cvXQflR8QIBGul2SOU/b8e775fd2c86f028a3c4652602219969/phase3.png)
 
-### Advanced Configuration
+Our application has now added two new states:
+1. __PRICE CONFIRM__: end state when a user selects PRICE as a negative response. We will display a contact number for pricing discussions. Creating a new end state provides us with flexibility if the business may want to display discount offers or ask the user for more contact information in the future
+2. __COMMENT__: when a user selects OTHER as a new reason for their negative response. This state includes three events where a user can UPDATE COMMENT to capture the reason, SUBMIT COMMENT to transition to end state and CANCEL to go back and select a different reason
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+Once again, our Finite State Machine is able to handle increasing complexity without breaking previous logic. Our designer and developer team can now confidently work on implementing the new logic:
 
-### Deployment
+[View demo](https://8y5dx.csb.app/)
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+## Future Complexity
+Our application will naturally grow in complexity as business and user requirements evolve. 
 
-### `yarn build` fails to minify
+Examples may include:
+- Ask for feedback for positive response
+- Invite user to add users after a positive response
+- Ask user to provide the name of the poor service representative
+- Introduce a passive response in addition to positive and negative
+- etc.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+With Finite State Machines we can confidently continue modelling this advanced complexity into our design and visually see how it interacts with previous functionality.
